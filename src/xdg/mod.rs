@@ -118,6 +118,56 @@ impl NotificationHandle {
         };
     }
 
+    /// Returns a future that waits for the user to act on a notification and then calls
+    /// `invocation_closure` with the name of the corresponding action.
+    ///
+    /// # Panics
+    ///
+    /// Panics if called with a [`Dbus`](DbusStack::Dbus) backend.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # use notify_rust::*;
+    /// # use async_std::task::sleep;
+    /// # use std::time::Duration;
+    /// # use futures_lite::future::zip;
+    /// # async fn wait_for_action_async_example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let handle: NotificationHandle = Notification::new()
+    ///     .action("do-stuff", "my fancy button")
+    ///     .show_async()
+    ///     .await?;
+    ///
+    /// let wait_future = handle.wait_for_action_async(|action| {
+    ///     // handle action
+    /// #   let _ = action;
+    /// });
+    /// let close_future = async {
+    ///     sleep(Duration::from_secs(5)).await;
+    ///     handle.close_async();
+    /// };
+    ///
+    /// // run both futures concurrently
+    /// # let _ =
+    /// zip(wait_future, close_future).await;
+    /// # Ok(())
+    /// # }
+    /// ```
+    #[cfg(all(feature = "async", feature = "zbus"))]
+    pub async fn wait_for_action_async<F>(&self, invocation_closure: F)
+    where
+        F: FnOnce(&ActionResponse),
+    {
+        match &self.inner {
+            #[cfg(feature = "dbus")]
+            NotificationHandleInner::Dbus(_) => {
+                unimplemented!("async methods are not supported with the `dbus` backend");
+            }
+            #[cfg(feature = "zbus")]
+            NotificationHandleInner::Zbus(inner) => inner.wait_for_action(invocation_closure).await,
+        }
+    }
+
     /// Manually close the notification
     ///
     /// # Example
@@ -141,6 +191,23 @@ impl NotificationHandle {
             NotificationHandleInner::Dbus(inner) => inner.close(),
             #[cfg(feature = "zbus")]
             NotificationHandleInner::Zbus(inner) => block_on(inner.close()),
+        }
+    }
+
+    /// Async version of [`close`](Self::close).
+    ///
+    /// # Panics
+    ///
+    /// Panics if called with a [`Dbus`](DbusStack::Dbus) backend.
+    #[cfg(all(feature = "async", feature = "zbus"))]
+    pub async fn close_async(&self) {
+        match &self.inner {
+            #[cfg(feature = "dbus")]
+            NotificationHandleInner::Dbus(_) => {
+                unimplemented!("async methods are not supported with the `dbus` backend");
+            }
+            #[cfg(feature = "zbus")]
+            NotificationHandleInner::Zbus(inner) => inner.close().await,
         }
     }
 
@@ -563,6 +630,7 @@ where
 }
 
 /// Response to an action
+#[derive(Clone, Debug)]
 pub enum ActionResponse<'a> {
     /// Custom Action configured by the Notification.
     Custom(&'a str),
