@@ -153,7 +153,7 @@ impl NotificationHandle {
     /// # Ok(())
     /// # }
     /// ```
-    #[cfg(all(feature = "async", feature = "zbus"))]
+    #[cfg(feature = "zbus")]
     pub async fn wait_for_action_async<F>(&self, invocation_closure: F)
     where
         F: FnOnce(&ActionResponse),
@@ -199,7 +199,7 @@ impl NotificationHandle {
     /// # Panics
     ///
     /// Panics if called with a [`Dbus`](DbusStack::Dbus) backend.
-    #[cfg(all(feature = "async", feature = "zbus"))]
+    #[cfg(feature = "zbus")]
     pub async fn close_async(&self) {
         match &self.inner {
             #[cfg(feature = "dbus")]
@@ -385,7 +385,7 @@ pub(crate) fn show_notification(notification: &Notification) -> Result<Notificat
     block_on(zbus_rs::connect_and_send_notification(notification)).map(Into::into)
 }
 
-#[cfg(all(feature = "async", feature = "zbus"))]
+#[cfg(feature = "zbus")]
 pub(crate) async fn show_notification_async(
     notification: &Notification,
 ) -> Result<NotificationHandle> {
@@ -394,7 +394,7 @@ pub(crate) async fn show_notification_async(
         .map(Into::into)
 }
 
-#[cfg(all(feature = "async", feature = "zbus"))]
+#[cfg(feature = "zbus")]
 pub(crate) async fn show_notification_async_at_bus(
     notification: &Notification,
     bus: NotificationBus,
