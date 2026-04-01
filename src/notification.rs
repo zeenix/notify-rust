@@ -85,6 +85,9 @@ pub struct Notification {
     #[cfg(target_os = "windows")]
     pub(crate) path_to_image: Option<String>,
 
+    #[cfg(target_os = "macos")]
+    pub(crate) path_to_image: Option<String>,
+
     #[cfg(target_os = "windows")]
     pub(crate) app_id: Option<String>,
 
@@ -163,6 +166,16 @@ impl Notification {
 
     /// Wrapper for `NotificationHint::ImagePath`
     #[cfg(target_os = "windows")]
+    pub fn image_path(&mut self, path: &str) -> &mut Notification {
+        self.path_to_image = Some(path.to_string());
+        self
+    }
+
+    /// Sets the image path for the notification on macOS.
+    ///
+    /// This maps to `content_image` in macOS notifications,
+    /// displaying the image on the right side of the notification banner.
+    #[cfg(target_os = "macos")]
     pub fn image_path(&mut self, path: &str) -> &mut Notification {
         self.path_to_image = Some(path.to_string());
         self
@@ -496,6 +509,7 @@ impl Default for Notification {
             actions: Vec::new(),
             timeout: Timeout::Default,
             sound_name: Default::default(),
+            path_to_image: None,
             id: None,
         }
     }
