@@ -35,12 +35,17 @@ impl DerefMut for NotificationHandle {
 }
 
 pub(crate) fn show_notification(notification: &Notification) -> Result<NotificationHandle> {
-    mac_notification_sys::Notification::default()
-        .title(notification.summary.as_str())
+    let mut n = mac_notification_sys::Notification::default();
+    n.title(notification.summary.as_str())
         .message(&notification.body)
         .maybe_subtitle(notification.subtitle.as_deref())
-        .maybe_sound(notification.sound_name.as_deref())
-        .send()?;
+        .maybe_sound(notification.sound_name.as_deref());
+
+    if let Some(ref image_path) = notification.path_to_image {
+        n.content_image(image_path);
+    }
+
+    n.send()?;
 
     Ok(NotificationHandle::new(notification.clone()))
 }
@@ -49,13 +54,18 @@ pub(crate) fn schedule_notification(
     notification: &Notification,
     delivery_date: f64,
 ) -> Result<NotificationHandle> {
-    mac_notification_sys::Notification::default()
-        .title(notification.summary.as_str())
+    let mut n = mac_notification_sys::Notification::default();
+    n.title(notification.summary.as_str())
         .message(&notification.body)
         .maybe_subtitle(notification.subtitle.as_deref())
         .maybe_sound(notification.sound_name.as_deref())
-        .delivery_date(delivery_date)
-        .send()?;
+        .delivery_date(delivery_date);
+
+    if let Some(ref image_path) = notification.path_to_image {
+        n.content_image(image_path);
+    }
+
+    n.send()?;
 
     Ok(NotificationHandle::new(notification.clone()))
 }
