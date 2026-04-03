@@ -82,10 +82,7 @@ pub struct Notification {
     #[cfg(target_os = "windows")]
     pub(crate) sound_name: Option<String>,
 
-    #[cfg(target_os = "windows")]
-    pub(crate) path_to_image: Option<String>,
-
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "windows", target_os = "macos"))]
     pub(crate) path_to_image: Option<String>,
 
     #[cfg(target_os = "windows")]
@@ -157,27 +154,25 @@ impl Notification {
         self
     }
 
-    /// Wrapper for `Hint::ImagePath`
-    #[cfg(all(unix, not(target_os = "macos")))]
-    pub fn image_path(&mut self, path: &str) -> &mut Notification {
-        self.hint(Hint::ImagePath(path.to_string()));
-        self
-    }
-
-    /// Wrapper for `NotificationHint::ImagePath`
-    #[cfg(target_os = "windows")]
-    pub fn image_path(&mut self, path: &str) -> &mut Notification {
-        self.path_to_image = Some(path.to_string());
-        self
-    }
-
-    /// Sets the image path for the notification on macOS.
+    /// Sets the image path for the notification˝.
     ///
-    /// This maps to `content_image` in macOS notifications,
-    /// displaying the image on the right side of the notification banner.
-    #[cfg(target_os = "macos")]
+    /// The path is passed to the platform's native notification API directly — no additional
+    /// dependencies or crate features are required.
+    ///
+    /// Platform behaviour:
+    /// - **Linux/BSD (XDG):** maps to the `image-path` hint in the D-Bus notification spec.
+    /// - **macOS:** maps to `content_image` in `mac-notification-sys`, displayed on the right
+    ///   side of the notification banner.
+    /// - **Windows:** passed directly to `winrt-notification` as the notification image.
     pub fn image_path(&mut self, path: &str) -> &mut Notification {
-        self.path_to_image = Some(path.to_string());
+        #[cfg(all(unix, not(target_os = "macos")))]
+        {
+            self.hint(Hint::ImagePath(path.to_string()));
+        }
+        #[cfg(any(target_os = "macos", target_os = "windows"))]
+        {
+            self.path_to_image = Some(path.to_string());
+        }
         self
     }
 
