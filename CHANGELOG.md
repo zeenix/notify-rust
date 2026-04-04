@@ -1,5 +1,12 @@
 # Changelog
 
+### [v4.13.1](https://github.com/hoodie/notify-rust/compare/v4.13.0...v4.13.1) (2026-04-04)
+
+#### Fixes
+
+* update maintenance state and formatting in README
+([efafd19](https://github.com/hoodie/notify-rust/commit/efafd19371f4628a3b5a4232061562c24630b702))
+
 ## [v4.13.0](https://github.com/hoodie/notify-rust/compare/v4.12.0...v4.13.0) (2026-04-04)
 
 ### Features
