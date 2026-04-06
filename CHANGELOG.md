@@ -1,5 +1,12 @@
 # Changelog
 
+## [v4.14.0](https://github.com/hoodie/notify-rust/compare/v4.13.1...v4.14.0) (2026-04-06)
+
+### Features
+
+* add urgency support for Windows
+([bb48726](https://github.com/hoodie/notify-rust/commit/bb48726aff7a4559fac046da908cb01b3466f60f))
+
 ### [v4.13.1](https://github.com/hoodie/notify-rust/compare/v4.13.0...v4.13.1) (2026-04-04)
 
 #### Fixes
