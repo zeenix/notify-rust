@@ -77,11 +77,11 @@ impl ZbusNotificationHandle {
         }
     }
 
-    pub async fn wait_for_action(self, invocation_closure: impl ActionResponseHandler) {
+    pub async fn wait_for_action(&self, invocation_closure: impl ActionResponseHandler) {
         wait_for_action_signal(&self.connection, self.id, invocation_closure).await;
     }
 
-    pub async fn close_fallible(self) -> Result<()> {
+    pub async fn close_fallible(&self) -> Result<()> {
         self.connection
             .call_method(
                 Some(self.notification.bus.clone().into_name()),
@@ -94,7 +94,7 @@ impl ZbusNotificationHandle {
         Ok(())
     }
 
-    pub async fn close(self) {
+    pub async fn close(&self) {
         let _ = self.close_fallible().await;
     }
 

@@ -461,7 +461,7 @@ impl Notification {
     ///
     /// Returns a handle to a notification
     #[cfg(all(unix, not(target_os = "macos")))]
-    #[cfg(all(feature = "async", feature = "zbus"))]
+    #[cfg(feature = "zbus")]
     pub async fn show_async(&self) -> Result<xdg::NotificationHandle> {
         xdg::show_notification_async(self).await
     }
@@ -470,7 +470,7 @@ impl Notification {
     ///
     /// Returns a handle to a notification
     #[cfg(all(unix, not(target_os = "macos")))]
-    #[cfg(feature = "async")]
+    #[cfg(feature = "zbus")]
     // #[cfg(test)]
     pub async fn show_async_at_bus(&self, sub_bus: &str) -> Result<xdg::NotificationHandle> {
         let bus = xdg::NotificationBus::custom(sub_bus).ok_or("invalid subpath")?;
