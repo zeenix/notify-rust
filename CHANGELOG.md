@@ -1,5 +1,20 @@
 # Changelog
 
+## [v4.16.0](https://github.com/hoodie/notify-rust/compare/v4.15.0...v4.16.0) (2026-04-19)
+
+### Features
+
+* add `images_no_default_features` crate feature for downstream users wishing
+to manually specify `image` sub-features.
+([6a42dd0](https://github.com/hoodie/notify-rust/commit/6a42dd0b2b335115f7dec5fda45b0cf8f3937cf3))
+
+## [v4.15.0](https://github.com/hoodie/notify-rust/compare/v4.14.0...v4.15.0) (2026-04-14)
+
+### Features
+
+* add non-blocking `wait_for_action_async`
+([9f3613c](https://github.com/hoodie/notify-rust/commit/9f3613c7d1b2bad5b00203fd2d6a18c37f01584a))
+
 ## [v4.14.0](https://github.com/hoodie/notify-rust/compare/v4.13.1...v4.14.0) (2026-04-06)
 
 ### Features
